@@ -1,0 +1,16 @@
+/*
+  secconfig.h
+  configuration file with security information, not shared on the internet.
+
+  THIS IS AN EXAMPLE FILE, PLEASE RENAME TO secconfig.h
+
+
+  @author  Leo Korbee (c), Leo.Korbee@xs4all.nl
+  @website iot-lab.org
+  @license Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+*/
+
+// Information from The Things Network, device configuration ACTIVATION METHOD: ABP, msb left
+unsigned char NwkSkey[16] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x014, 0x15, 0x16 };
+unsigned char AppSkey[16] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x014, 0x15, 0x16 };
+unsigned char DevAddr[4] = { 0x00, 0x00, 0x00, 0x05};
