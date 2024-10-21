@@ -40,7 +40,7 @@ volatile uint16_t sleep_count = sleep_total + 1; // count elapsed sleep cycles
 /* Functions implemented at the bottom of the page */
 void goToSleep();         // Enables sleep state
 void wdtSetup();          // Setup watchdog timer
-void setup_unused_pins(); // Initializes unused pins to save power
+void setup_unused_pins(); // Initialize unused pins to save power
 
 /* USER CODE BEGIN */
 // Add your functions definition here
@@ -133,7 +133,7 @@ void wdtSetup()
   bitClear(MCUSR, WDRF);
   // Start timed sequence
   bitSet(WDTCSR, WDCE); //Watchdog Change Enable to clear WD
-  bitSet(WDTCSR, WDE); //Enable WD
+  bitSet(WDTCSR, WDE);  //Enable WD
 
   // Set new watchdog timeout value to 8 second
   bitSet(WDTCSR, WDP3);
@@ -157,9 +157,15 @@ void goToSleep()
   ADCSRA &= ~(1 << ADEN);
   wdtSetup(); //enable watchDog
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-  // sleep_mode does set and reset the SE bit.
-  // sleep_enable and sleep_disable are not needed in this case
-  sleep_mode();
+
+  sleep_enable(); // Set SE bit
+
+  // deactivate BOD (brown-out detector) during sleep:
+  sleep_bod_disable();
+
+  sleep_cpu();      // Enter sleep state
+  sleep_disable();  // Clear SE bit
+
   //disable watchdog after sleep
   wdt_disable();
   // enable ADC
