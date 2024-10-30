@@ -81,8 +81,9 @@ void RFM95::init(uint8_t level, uint8_t PA_boost_on)
   //BW = 125 kHz, Coding rate 4/5, Explicit header mode
   RFM_Write(0x1D,0x72);
 
+  // MOD here:
   //Spreading factor 7, PayloadCRC On
-  RFM_Write(0x1E,0xB4);              
+  //RFM_Write(0x1E,0xB4);              
 
   //Rx Timeout set to 37 symbols
   RFM_Write(0x1F,0x25);
@@ -93,7 +94,7 @@ void RFM95::init(uint8_t level, uint8_t PA_boost_on)
   RFM_Write(0x21,0x08);
 
   //Low datarate optimization off AGC auto on
-  RFM_Write(0x26,0x0C);
+  RFM_Write(0x26,0x04);
 
   //Set LoRa sync word
   RFM_Write(0x39,0x34);
@@ -290,19 +291,22 @@ void RFM95::RFM_Send_Package(unsigned char *RFM_Tx_Package, unsigned char Packag
 
     case 11: 
       RFM_Write(0x1E,0xB4); //SF11 CRC On 
+      RFM_Write(0x26,0x0C); //Low datarate optimization on AGC auto on
       break;
 
     case 12:
       RFM_Write(0x1E,0xC4); //SF12 CRC On 
+      RFM_Write(0x26,0x0C); //Low datarate optimization on AGC auto on
       break;
 
     default:
       RFM_Write(0x1E,0x74); //SF7 CRC On 
       break;
   }
-       
+
+  //RFM_Write(0x1E,0xB4); //SF7 CRC On 
   RFM_Write(0x1D,0x72); //125 kHz 4/5 coding rate explicit header mode
-  RFM_Write(0x26,0x04); //Low datarate optimization off AGC auto on
+  //RFM_Write(0x26,0x04); //Low datarate optimization off AGC auto on
 
   //Set IQ to normal values
   RFM_Write(0x33,0x27);
