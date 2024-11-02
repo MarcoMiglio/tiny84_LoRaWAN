@@ -99,3 +99,4 @@ The code is optimized for low power consumption, making it suitable for battery-
 1. To add sensor data, refer to `examples/aht20_example` or `examples/bmp280_example`.
 2. Modify the `tiny84_RFM95` code to include the necessary sensor headers and data collection logic.
 
+Additional details will be added in the Wiki page.
