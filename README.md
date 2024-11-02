@@ -38,7 +38,7 @@ The code is optimized for low power consumption, making it suitable for battery-
 
 3. **Software**:
    - Arduino IDE
-   - Support for ATTiny MCUs (follow this [link](https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json))
+   - Support for ATTiny MCUs inside Arduino IDE (follow this [link](https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json))
    - RFM95 & LoRaWAN libraries are based on [LeoKorbee](https://gitlab.com/iot-lab-org/ATtiny84_low_power_LoRa_node_OOP).
      Few adjustements were done to include adjustable SF and Transmission power levels
 
