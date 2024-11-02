@@ -11,13 +11,14 @@
 /* Add your include statements here */
 /* USER CODE BEGIN */
 #include <AHT20.h>
-//#include <SoftwareSerial.h>
+#include <BMP280.h>
+#include <SoftwareSerial.h>
 /* USER CODE END */
 
 
 
 /* Debug serial port */
-//SoftwareSerial serial(10, 9); // RX, TX
+// SoftwareSerial serial(10, 9); // RX, TX
 
 /* RFM95 instance */
 const byte DIO0 = 0;
@@ -38,6 +39,9 @@ volatile uint16_t sleep_count = sleep_total + 1; // count elapsed sleep cycles
 /* USER CODE BEGIN */
 // Add your variables/constructors definitions here:
 AHT20 aht20;
+
+BMP280::Settings bmp280_settings;             // defalut settings structure (see BMP280.h): no OSR, no IIR, forced mode
+BMP280 bmp280(bmp280_settings, 0x77);  
 /* USER CODE END */
 
 
@@ -54,7 +58,7 @@ void setup_unused_pins(); // Initialize unused pins to save power
 
 
 void setup() {
-  // initialize debug serial
+  // // initialize debug serial
   // serial.begin(9600);
   // while (!serial) {
   //   delay(100);
@@ -66,7 +70,7 @@ void setup() {
 
   /* USER CODE END */
 
-  // Initialize RFM module
+  //Initialize RFM module
   rfm.init(power_level, PA_boost_on);
   lora.setKeys(NwkSkey, AppSkey, DevAddr);
 
@@ -89,31 +93,21 @@ void loop() {
     /* USER CODE BEGIN */
     /* Read and prepare your sensor data here */
     
-    //serial.println(F("awake!"));
-  
-    uint8_t Data_Length = 4;
+    uint8_t Data_Length = 7;
     uint8_t Data[Data_Length];
 
     // Ensure SPI is in high impedance mode:
-    digitalWrite(NSS, HIGH);
     SPI.end();
     delay(1);
 
-    // initialize your sensor and I2C line
-    bool stat = aht20.begin();
+    /* AHT20 code: */   
 
-    if (!stat) {
-      //serial.println(F("Err init"));
-    }
-
-    // trigger measurement mode:
-    stat = aht20.readData();
-
-    if (!stat) {
-      //serial.println(F("Err reading"));
-    }
-
-    // get your measurements here:
+    // start I2C and init aht20:
+    aht20.begin();
+    
+    aht20.readData();
+    
+    // get your temperature and humidity measurements here:
     float hum  = aht20.getHumidity();
     float temp = aht20.getTemperature();
 
@@ -124,6 +118,20 @@ void loop() {
     Data[1] = hum_int & 0xFF;
     Data[2] = (temp_int >> 8) & 0xFF;
     Data[3] = temp_int & 0xFF;
+
+
+    /* BMP280 code: */
+
+    // Start I2C and init bmp280:
+    bmp280.begin();
+
+    float bmp280_press = bmp280.readPressure(BMP280::PresUnit_Pa);
+
+    uint32_t bmp_press_int = bmp280_press*10;
+
+    Data[4] = (bmp_press_int >> 16) & 0xFF;
+    Data[5] = (bmp_press_int >> 8) & 0xFF;
+    Data[6] = bmp_press_int & 0xff;
 
     // de-initialize I2C pins:
     // close I2C resources --> I2C pins can be used for SPI now...
@@ -143,7 +151,6 @@ void loop() {
     //prepara LoRa:
     SPI.setDataMode(SPI_MODE0);
     SPI.begin();
-    //rfm.init(power_level, PA_boost_on);
 
     // transmit data
     lora.Send_Data(Data, Data_Length, Frame_Counter_Tx, SF);
