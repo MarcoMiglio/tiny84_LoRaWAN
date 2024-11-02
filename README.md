@@ -57,7 +57,7 @@ The code is optimized for low power consumption, making it suitable for battery-
 - **tiny84_RFM95 Example**:
   1. Open `tiny84_RFM95/tiny84_RFM95.ino` in Arduino IDE.
   2. Update your secconfig.h file (with either internal server or TTN session/application keys).
-     Visit the Wiki page for additioal details on setting up a TTN end device.
+     Visit the Wiki page for additioal details about setting up a TTN end device.
   3. In the main file configure LoRaWAN and power management:
      ```
         /* Define LoRaWAN layer */
