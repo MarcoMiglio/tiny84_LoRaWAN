@@ -38,9 +38,8 @@ The code is optimized for low power consumption, making it suitable for battery-
 
 3. **Software**:
    - Arduino IDE
-   - Support for ATTiny MCUs inside Arduino IDE (additional details [here]([https://raw.githubusercontent.com/damellis/attiny/ide-1.6.x-boards-manager/package_damellis_attiny_index.json](https://github.com/MarcoMiglio/tiny84_LoRaWAN/wiki/Programming-ATTiny84-using-Arduino-IDE)))
-   - RFM95 & LoRaWAN libraries are based on [LeoKorbee](https://gitlab.com/iot-lab-org/ATtiny84_low_power_LoRa_node_OOP).
-     Few adjustements were done to include adjustable SF and Transmission power levels
+   - Support for ATTiny MCUs inside Arduino IDE (additional details [here](https://github.com/MarcoMiglio/tiny84_LoRaWAN/wiki/Programming-ATTiny84-using-Arduino-IDE))
+   - RFM95 & LoRaWAN libraries are based on [LeoKorbee](https://gitlab.com/iot-lab-org/ATtiny84_low_power_LoRa_node_OOP) work. Few adjustements were done to include adjustable SF and Transmission power levels
 
 ### Installation
 
@@ -57,7 +56,7 @@ The code is optimized for low power consumption, making it suitable for battery-
 - **tiny84_RFM95 Example**:
   1. Open `tiny84_RFM95/tiny84_RFM95.ino` in Arduino IDE.
   2. Update your secconfig.h file (with either internal server or TTN session/application keys).
-     Visit the Wiki page for additioal details about setting up a TTN end device.
+     Visit the [Wiki](https://github.com/MarcoMiglio/tiny84_LoRaWAN/wiki/Setting-up-TTN-end-device) for additioal details about setting up a TTN end device.
   3. In the main file configure LoRaWAN and power management:
      ```
         /* Define LoRaWAN layer */
@@ -67,12 +66,20 @@ The code is optimized for low power consumption, making it suitable for battery-
         uint8_t PA_boost_on = 1;  // Still testing, do not modify this byte...
         uint8_t power_level = 14; // Set your Tx Power
      ```
-  4. Update the code inside this function (bottom of the page):
+  4. Adjust your sleep counters as specified here:
+     ```
+        /* Sleep counters */
+        const uint16_t sleep_total = 1;                  // Set sleep time (depends on your wdt settings)
+        volatile uint16_t sleep_count = sleep_total + 1; // count elapsed sleep cycles
+     ```
+     sleep_total defines the total number of sleep cycles before the sensor node awakes to attempt a transmission. This value is related to the
+     transmission period as: Tx_period = sleep_total * 8s (indeed the internal watchdog awakes the MCU every 8s).
+  6. Update the code inside this function (bottom of the page):
      ```
         void setup_unused_pins(){ ... }
      ```
      Comment-out the pins you are actively using. (RETAIN all existing comments; do not delete any lines that are already commented).
-  5. Feel free to add your personal code in the sections delimited by:
+  7. Feel free to add your personal code in the sections delimited by:
      ```
         /* USER CODE BEGIN */
           your code here....
@@ -80,8 +87,8 @@ The code is optimized for low power consumption, making it suitable for battery-
      ```
      Visit the /examples folder for additional details.
   
-  6. Upload the code to the ATTiny84. Visit wiki page for additional details about programming ATTiny MCUs through UNO boards.
-  7. Use the following default connections:
+  8. Upload the code to the ATTiny84. Visit [Wiki page](https://github.com/MarcoMiglio/tiny84_LoRaWAN/wiki/Programming-ATTiny84-using-Arduino-IDE) for additional details about         programming ATTiny MCUs through UNO boards.
+  9. Use the following default connections:
  
     | ATTiny84 Pin | RFM95 Pin | Description                |
     |--------------|-----------|----------------------------|
